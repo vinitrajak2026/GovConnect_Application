@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}Schemes - GovConnect{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <div class="row g-4">
+    <div class="col-lg-3">
+      <div class="premium-card" style="position:sticky;top:100px;">
+        <p style="font-size:.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem;">Filters</p>
+        <form method="GET" action="{% url 'portal:scheme_list' %}">
+          <div class="mb-3">
+            <label for="q" class="form-label" style="font-weight:500;font-size:.82rem;">Search</label>
+            <input type="text" class="form-control form-control-sm" id="q" name="q" value="{{ q|default:'' }}" placeholder="Farmers, Women...">
+          </div>
+          <div class="mb-3">
+            <label for="category" class="form-label" style="font-weight:500;font-size:.82rem;">Audience</label>
+            <select class="form-select form-select-sm" id="category" name="category">
+              <option value="">All</option>
+              {% for category in categories %}
+                <option value="{{ category }}" {% if cat == category %}selected{% endif %}>{{ category }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="state" class="form-label" style="font-weight:500;font-size:.82rem;">State</label>
+            <select class="form-select form-select-sm" id="state" name="state">
+              <option value="">Central</option>
+              {% for state in states %}
+                <option value="{{ state.id }}" {% if state_id == state.id|stringformat:"i" %}selected{% endif %}>{{ state.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <button type="submit" class="btn btn-gov-primary btn-sm w-100 mb-2">Apply</button>
+          <a href="{% url 'portal:scheme_list' %}" class="btn btn-sm w-100" style="color:var(--text-muted);font-size:.82rem;">Reset</a>
+        </form>
+      </div>
+    </div>
+
+    <div class="col-lg-9">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 style="font-size:1.6rem;font-weight:800;letter-spacing:-0.03em;margin:0;">Welfare Schemes</h2>
+        <span style="color:var(--text-muted);font-size:.85rem;">{{ schemes|length }} schemes</span>
+      </div>
+      <div class="row g-3">
+        {% for scheme in schemes %}
+          <div class="col-md-6">
+            <div class="premium-card h-100" style="padding:1.5rem;cursor:pointer;" onclick="location.href='{% url 'portal:scheme_detail' scheme.id %}'">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <span class="badge-category" style="background:hsla(var(--a-h),var(--a-s),var(--a-l),0.1);color:var(--accent);border-color:hsla(var(--a-h),var(--a-s),var(--a-l),0.2);">{{ scheme.category }}</span>
+                <span style="font-size:.78rem;color:var(--text-muted);">{% if scheme.state %}{{ scheme.state.name }}{% else %}Central{% endif %}</span>
+              </div>
+              <h4 style="font-size:1.05rem;font-weight:700;margin-bottom:.5rem;">{{ scheme.name }}</h4>
+              <div class="d-flex justify-content-between align-items-center">
+                <span style="font-size:.85rem;color:var(--accent);font-weight:700;">₹{{ scheme.benefit_amount|floatformat:0 }}</span>
+                <span style="color:var(--primary);font-size:.82rem;font-weight:600;">Check Eligibility →</span>
+              </div>
+            </div>
+          </div>
+        {% empty %}
+          <div class="col-12 text-center py-5">
+            <div style="font-size:3rem;margin-bottom:1rem;">📂</div>
+            <p style="color:var(--text-muted);">No schemes found.</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

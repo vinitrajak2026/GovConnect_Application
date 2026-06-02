@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}Search Results - GovConnect{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <h2 style="font-size:1.6rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:2rem;">
+    Search Results for: "<span style="background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">{{ query }}</span>"
+  </h2>
+  
+  <div class="row g-4">
+    
+    <!-- Exams Results -->
+    <div class="col-md-4">
+      <div class="premium-card h-100" style="padding:1.5rem;">
+        <h4 style="font-size:1.1rem;font-weight:700;margin-bottom:1.2rem;border-bottom:1px solid var(--border-color);padding-bottom:.5rem;">🎓 Exams Matches ({{ exams|length }})</h4>
+        {% if exams %}
+          <div class="d-flex flex-column gap-3">
+            {% for exam in exams %}
+              <a href="{% url 'portal:exam_detail' exam.id %}" style="text-decoration:none;display:block;border-bottom:1px solid var(--border-color);padding-bottom:.6rem;">
+                <h6 style="font-size:.9rem;font-weight:600;color:var(--text-main);margin-bottom:2px;">{{ exam.name }}</h6>
+                <small style="color:var(--text-muted);font-size:.78rem;">Authority: {{ exam.conducting_authority }}</small>
+              </a>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p style="color:var(--text-muted);font-size:.85rem;">No exams match your search criteria.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Jobs Results -->
+    <div class="col-md-4">
+      <div class="premium-card h-100" style="padding:1.5rem;">
+        <h4 style="font-size:1.1rem;font-weight:700;margin-bottom:1.2rem;border-bottom:1px solid var(--border-color);padding-bottom:.5rem;">💼 Jobs Matches ({{ jobs|length }})</h4>
+        {% if jobs %}
+          <div class="d-flex flex-column gap-3">
+            {% for job in jobs %}
+              <a href="{% url 'portal:job_detail' job.id %}" style="text-decoration:none;display:block;border-bottom:1px solid var(--border-color);padding-bottom:.6rem;">
+                <h6 style="font-size:.9rem;font-weight:600;color:var(--text-main);margin-bottom:2px;">{{ job.post_name }}</h6>
+                <small style="color:var(--text-muted);font-size:.78rem;">{{ job.department }} · {{ job.vacancies }} posts</small>
+              </a>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p style="color:var(--text-muted);font-size:.85rem;">No jobs match your search criteria.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Schemes Results -->
+    <div class="col-md-4">
+      <div class="premium-card h-100" style="padding:1.5rem;">
+        <h4 style="font-size:1.1rem;font-weight:700;margin-bottom:1.2rem;border-bottom:1px solid var(--border-color);padding-bottom:.5rem;">🚜 Schemes Matches ({{ schemes|length }})</h4>
+        {% if schemes %}
+          <div class="d-flex flex-column gap-3">
+            {% for scheme in schemes %}
+              <a href="{% url 'portal:scheme_detail' scheme.id %}" style="text-decoration:none;display:block;border-bottom:1px solid var(--border-color);padding-bottom:.6rem;">
+                <h6 style="font-size:.9rem;font-weight:600;color:var(--text-main);margin-bottom:2px;">{{ scheme.name }}</h6>
+                <small style="color:var(--text-muted);font-size:.78rem;">Category: {{ scheme.category }}</small>
+              </a>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p style="color:var(--text-muted);font-size:.85rem;">No welfare schemes match your search criteria.</p>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

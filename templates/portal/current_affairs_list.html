@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block title %}Current Affairs &amp; Quiz - GovConnect{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <div class="row g-4">
+    
+    <!-- Left: Daily news feed -->
+    <div class="col-lg-8">
+      <div class="premium-card" style="padding:2.5rem;">
+        <h2 style="font-size:1.6rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:0.4rem;">Daily Current Affairs Updates</h2>
+        <p style="color:var(--text-muted);font-size:.9rem;margin-bottom:2rem;">Stay updated with latest national and international bulletins compiled for aspirants.</p>
+        
+        <!-- Filter Tabs -->
+        <div class="d-flex flex-wrap gap-2 mb-4">
+          <a href="{% url 'portal:current_affairs_list' %}" class="badge-category py-2 px-3 text-decoration-none {% if not cat %}active{% endif %}" style="{% if not cat %}background:var(--primary);color:#fff;border-color:var(--primary);{% endif %}">All</a>
+          {% for category in categories %}
+            <a href="{% url 'portal:current_affairs_list' %}?category={{ category }}" 
+               class="badge-category py-2 px-3 text-decoration-none {% if cat == category %}active{% endif %}"
+               style="{% if cat == category %}background:var(--primary);color:#fff;border-color:var(--primary);{% endif %}">
+              {{ category }}
+            </a>
+          {% endfor %}
+        </div>
+
+        <div class="d-flex flex-column gap-4">
+          {% for article in articles %}
+            <div style="border-bottom:1px solid var(--border-color);padding-bottom:1.5rem;">
+              <span class="badge-category mb-2 d-inline-block">{{ article.category }}</span>
+              <h4 style="font-size:1.15rem;font-weight:700;margin-bottom:.5rem;">
+                <a href="{% url 'portal:current_affairs_detail' article.id %}" style="text-decoration:none;color:var(--text-main);">{{ article.title }}</a>
+              </h4>
+              <p style="color:var(--text-muted);font-size:.78rem;margin-bottom:.8rem;">Published: <strong style="color:var(--text-main);">{{ article.pub_date|date:"M d, Y" }}</strong></p>
+              <p style="color:var(--text-muted);font-size:.9rem;line-height:1.7;margin-bottom:1rem;">{{ article.content|truncatewords:45 }}</p>
+              <a href="{% url 'portal:current_affairs_detail' article.id %}" style="color:var(--primary);font-size:.85rem;font-weight:600;text-decoration:none;">Read Full Article &rarr;</a>
+            </div>
+          {% empty %}
+            <div class="text-center py-5">
+              <div style="font-size:3rem;margin-bottom:1rem;">📂</div>
+              <p style="color:var(--text-muted);">No news articles found in this category.</p>
+            </div>
+          {% endfor %}
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Right: Quizzes & PDFs -->
+    <div class="col-lg-4">
+      
+      <!-- Weekly Quizzes -->
+      <div class="premium-card mb-4" style="padding:1.5rem;">
+        <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:0.4rem;">📝 Weekly Prep Quizzes</h3>
+        <p style="color:var(--text-muted);font-size:.82rem;line-height:1.6;margin-bottom:1.5rem;">Evaluate your memory retention on current events. Interactive grading matches immediate results.</p>
+        <div class="d-flex flex-column gap-3">
+          {% for quiz in quizzes %}
+            <a href="{% url 'portal:quiz_detail' quiz.id %}" class="d-flex justify-content-between align-items-center p-3 rounded" style="background:var(--bg-tertiary);text-decoration:none;border:1px solid var(--border-color);transition:border-color .2s;">
+              <div>
+                <h6 style="font-size:.9rem;font-weight:600;color:var(--text-main);margin-bottom:2px;">{{ quiz.title }}</h6>
+                <small style="color:var(--text-muted);font-size:.75rem;">{{ quiz.created_at|date:"M d, Y" }}</small>
+              </div>
+              <span class="btn btn-gov-primary btn-sm px-3 py-1" style="font-size:.75rem;">Start</span>
+            </a>
+          {% empty %}
+            <p style="color:var(--text-muted);font-size:.85rem;margin-bottom:0;">No active prep tests listed yet.</p>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Study PDFs -->
+      <div class="premium-card mb-4" style="padding:1.5rem;">
+        <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:0.4rem;">📚 Study Material &amp; PDFs</h3>
+        <p style="color:var(--text-muted);font-size:.82rem;line-height:1.6;margin-bottom:1.5rem;">Download curated monthly digests and study materials compiled by senior educators.</p>
+        <div class="d-flex flex-column gap-2">
+          <a href="#" class="btn btn-sm text-start py-2.5 px-3" style="border:1px solid var(--border-color);color:var(--text-main);font-size:.85rem;font-weight:500;">📥 June 2026 Monthly Digest (PDF)</a>
+          <a href="#" class="btn btn-sm text-start py-2.5 px-3" style="border:1px solid var(--border-color);color:var(--text-main);font-size:.85rem;font-weight:500;">📥 May 2026 Current Affairs (PDF)</a>
+          <a href="#" class="btn btn-sm text-start py-2.5 px-3" style="border:1px solid var(--border-color);color:var(--text-main);font-size:.85rem;font-weight:500;">📥 Dynamic GK Syllabus Guide (PDF)</a>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+{% endblock %}

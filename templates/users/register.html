@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block title %}Create Account - GovConnect{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-10 col-xl-9">
+      <div class="split-auth-container">
+        
+        <!-- Left: Registration Form -->
+        <div class="split-auth-form-side" style="padding:3rem;">
+          <div style="max-width:480px;margin:0 auto;width:100%;">
+            <div class="mb-4">
+              <h2 style="font-size:1.8rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:0.5rem;">Create your profile</h2>
+              <p style="color:var(--text-muted);font-size:.9rem;">Complete demographics for AI-powered recommendations.</p>
+            </div>
+            
+            <form method="POST" action="{% url 'users:register' %}">
+              {% csrf_token %}
+              
+              <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                  <label for="email" class="form-label" style="font-weight:500;font-size:.85rem;">Email</label>
+                  <input type="email" class="form-control form-control-sm" id="email" name="email" required placeholder="you@example.com">
+                </div>
+                <div class="col-md-6">
+                  <label for="phone" class="form-label" style="font-weight:500;font-size:.85rem;">Phone</label>
+                  <input type="text" class="form-control form-control-sm" id="phone" name="phone" required placeholder="+91 9876543210">
+                </div>
+              </div>
+
+              <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                  <label for="password" class="form-label" style="font-weight:500;font-size:.85rem;">Password</label>
+                  <input type="password" class="form-control form-control-sm" id="password" name="password" required placeholder="••••••••">
+                </div>
+                <div class="col-md-6">
+                  <label for="confirm_password" class="form-label" style="font-weight:500;font-size:.85rem;">Confirm</label>
+                  <input type="password" class="form-control form-control-sm" id="confirm_password" name="confirm_password" required placeholder="••••••••">
+                </div>
+              </div>
+
+              <div style="height:1px;background:var(--border-color);margin:1.5rem 0;"></div>
+              <p style="font-size:.8rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem;">Demographics</p>
+
+              <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                  <label for="qualification" class="form-label" style="font-weight:500;font-size:.85rem;">Qualification</label>
+                  <select class="form-select form-select-sm" id="qualification" name="qualification">
+                    {% for code, label in qualifications %}
+                      <option value="{{ code }}">{{ label }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label for="state" class="form-label" style="font-weight:500;font-size:.85rem;">State / UT</label>
+                  <select class="form-select form-select-sm" id="state" name="state" required>
+                    <option value="">Select state</option>
+                    {% for state in states %}
+                      <option value="{{ state.id }}">{{ state.name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                  <label for="occupation" class="form-label" style="font-weight:500;font-size:.85rem;">Occupation</label>
+                  <select class="form-select form-select-sm" id="occupation" name="occupation">
+                    {% for code, label in occupations %}
+                      <option value="{{ code }}">{{ label }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label for="gender" class="form-label" style="font-weight:500;font-size:.85rem;">Gender</label>
+                  <select class="form-select form-select-sm" id="gender" name="gender">
+                    {% for code, label in genders %}
+                      <option value="{{ code }}">{{ label }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                  <label for="age" class="form-label" style="font-weight:500;font-size:.85rem;">Age</label>
+                  <input type="number" class="form-control form-control-sm" id="age" name="age" min="1" max="120" required value="22">
+                </div>
+                <div class="col-md-6">
+                  <label for="annual_income" class="form-label" style="font-weight:500;font-size:.85rem;">Annual Income (₹)</label>
+                  <input type="number" class="form-control form-control-sm" id="annual_income" name="annual_income" required value="150000">
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-gov-primary w-100 mb-3" style="padding:.75rem;">Create Profile</button>
+              
+              <p class="text-center mb-0" style="color:var(--text-muted);font-size:.88rem;">
+                Already registered? <a href="{% url 'users:login' %}" style="color:var(--primary);text-decoration:none;font-weight:600;">Sign in</a>
+              </p>
+            </form>
+          </div>
+        </div>
+
+        <!-- Right: Banner -->
+        <div class="split-auth-banner-side d-none d-lg-flex">
+          <div class="gradient-orb" style="bottom:-80px;left:-80px;opacity:0.3;" aria-hidden="true"></div>
+          <div style="position:relative;z-index:2;">
+            <div style="font-size:3.5rem;margin-bottom:1.5rem;">🎯</div>
+            <h3 style="font-size:1.6rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:1rem;">Unlock personalized government insights</h3>
+            <p style="font-size:.95rem;opacity:.8;line-height:1.7;">Your demographic data powers our AI recommendation engine, matching you with the most relevant schemes, exams, and opportunities.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

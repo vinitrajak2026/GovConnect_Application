@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}{{ job.post_name }} - GovConnect{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="premium-card" style="padding:2.5rem;">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+          <div>
+            <span class="badge-category mb-2 d-inline-block">{{ job.state.name|default:"Central Government" }}</span>
+            <h1 style="font-size:1.6rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:.3rem;">{{ job.post_name }}</h1>
+            <p style="color:var(--text-muted);font-size:.95rem;margin-bottom:0;">{{ job.department }}</p>
+          </div>
+          {% csrf_token %}
+          <button class="btn btn-sm bookmark-toggle-btn {% if is_bookmarked %}btn-gov-secondary{% else %}btn-outline-secondary{% endif %} px-3 py-2" data-model="job" data-id="{{ job.id }}" style="border-radius:var(--radius-sm);font-size:.82rem;">
+            {% if is_bookmarked %}❤️ Saved{% else %}🤍 Save{% endif %}
+          </button>
+        </div>
+
+        <div class="row g-3 mb-4">
+          <div class="col-6 col-md-3">
+            <div style="padding:1rem;background:var(--bg-tertiary);border-radius:var(--radius-sm);text-align:center;">
+              <span style="font-size:.72rem;color:var(--text-muted);display:block;">Positions</span>
+              <strong style="font-size:1.1rem;">{{ job.vacancies }}</strong>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div style="padding:1rem;background:var(--bg-tertiary);border-radius:var(--radius-sm);text-align:center;">
+              <span style="font-size:.72rem;color:var(--text-muted);display:block;">Salary</span>
+              <strong style="font-size:.9rem;">{{ job.salary_range }}</strong>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div style="padding:1rem;background:var(--bg-tertiary);border-radius:var(--radius-sm);text-align:center;">
+              <span style="font-size:.72rem;color:var(--text-muted);display:block;">Qualification</span>
+              <strong style="font-size:.9rem;">{{ job.qualification }}</strong>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div style="padding:1rem;background:var(--bg-tertiary);border-radius:var(--radius-sm);text-align:center;">
+              <span style="font-size:.72rem;color:var(--text-muted);display:block;">Deadline</span>
+              <strong style="font-size:.9rem;color:var(--danger);">{{ job.last_date|date:"M d" }}</strong>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:1px;background:var(--border-color);margin:1.5rem 0;"></div>
+
+        <div style="color:var(--text-muted);font-size:.9rem;line-height:1.7;margin-bottom:2rem;">
+          <p>Candidates meeting the qualification of <strong style="color:var(--text-main);">{{ job.qualification }}</strong> are invited to apply before <strong style="color:var(--danger);">{{ job.last_date }}</strong>. Please verify details from the official notification before submission.</p>
+        </div>
+
+        <div class="d-flex justify-content-between flex-wrap gap-2">
+          <a href="{% url 'portal:job_list' %}" class="btn btn-sm px-3 py-2" style="border:1px solid var(--border-color);color:var(--text-main);font-weight:500;border-radius:var(--radius-sm);">← Back</a>
+          <a href="{{ job.official_notification }}" class="btn btn-gov-primary btn-sm px-4 py-2" target="_blank">Apply Now ↗</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block title %}{{ exam.name }} - GovConnect{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <!-- Header -->
+      <div class="premium-card mb-4">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+          <div>
+            <span class="badge-category mb-2 d-inline-block">{{ exam.category.name }}</span>
+            <h1 style="font-size:1.6rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:.3rem;">{{ exam.name }}</h1>
+            <p style="color:var(--text-muted);font-size:.9rem;margin-bottom:0;">{{ exam.conducting_authority }} · <a href="{{ exam.official_website }}" target="_blank" style="color:var(--primary);text-decoration:none;">Official site ↗</a></p>
+          </div>
+          {% csrf_token %}
+          <button class="btn btn-sm bookmark-toggle-btn {% if is_bookmarked %}btn-gov-secondary{% else %}btn-outline-secondary{% endif %} px-3 py-2" data-model="exam" data-id="{{ exam.id }}" style="border-radius:var(--radius-sm);font-size:.82rem;">
+            {% if is_bookmarked %}❤️ Saved{% else %}🤍 Save{% endif %}
+          </button>
+        </div>
+      </div>
+
+      <!-- Eligibility -->
+      <div class="premium-card mb-4">
+        <p style="font-size:.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem;">Eligibility & Criteria</p>
+        <div class="row g-3 mb-4">
+          <div class="col-4">
+            <div style="padding:1rem;background:var(--bg-tertiary);border-radius:var(--radius-sm);">
+              <span style="font-size:.75rem;color:var(--text-muted);display:block;">Qualification</span>
+              <strong style="font-size:.9rem;">{{ exam.qualification }}</strong>
+            </div>
+          </div>
+          <div class="col-4">
+            <div style="padding:1rem;background:var(--bg-tertiary);border-radius:var(--radius-sm);">
+              <span style="font-size:.75rem;color:var(--text-muted);display:block;">Age Limit</span>
+              <strong style="font-size:.9rem;">{{ exam.age_limit }} years</strong>
+            </div>
+          </div>
+          <div class="col-4">
+            <div style="padding:1rem;background:var(--bg-tertiary);border-radius:var(--radius-sm);">
+              <span style="font-size:.75rem;color:var(--text-muted);display:block;">Fee</span>
+              <strong style="font-size:.9rem;">₹{{ exam.fees|floatformat:2 }}</strong>
+            </div>
+          </div>
+        </div>
+        <p style="color:var(--text-muted);font-size:.9rem;line-height:1.7;">{{ exam.eligibility|linebreaks }}</p>
+      </div>
+
+      <!-- Syllabus -->
+      <div class="premium-card mb-4">
+        <p style="font-size:.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem;">Syllabus & Pattern</p>
+        <h5 style="font-size:1rem;font-weight:600;margin-bottom:.5rem;">Exam Pattern</h5>
+        <div style="color:var(--text-muted);font-size:.9rem;line-height:1.7;margin-bottom:1.5rem;">{{ exam.exam_pattern|linebreaks }}</div>
+        <h5 style="font-size:1rem;font-weight:600;margin-bottom:.5rem;">Syllabus</h5>
+        <div style="color:var(--text-muted);font-size:.9rem;line-height:1.7;">{{ exam.syllabus|linebreaks }}</div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+      <div class="premium-card mb-4" style="position:sticky;top:100px;">
+        <p style="font-size:.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem;">📅 Important Dates</p>
+        <div class="d-flex flex-column gap-2 mb-4">
+          {% for date in dates %}
+            <div style="padding:.6rem .8rem;background:var(--bg-tertiary);border-radius:var(--radius-sm);font-size:.85rem;color:var(--text-muted);">{{ date }}</div>
+          {% empty %}
+            <p style="font-size:.85rem;color:var(--text-muted);">Check official portal for schedules.</p>
+          {% endfor %}
+        </div>
+
+        <p style="font-size:.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem;">Quick Links</p>
+        <div class="d-grid gap-2">
+          {% if exam.admit_card_link %}
+            <a href="{{ exam.admit_card_link }}" class="btn btn-gov-primary btn-sm" target="_blank">📥 Admit Card</a>
+          {% endif %}
+          {% if exam.result_link %}
+            <a href="{{ exam.result_link }}" class="btn btn-gov-secondary btn-sm" target="_blank">🔍 Result</a>
+          {% endif %}
+          <a href="{{ exam.official_website }}" class="btn btn-sm" target="_blank" style="border:1px solid var(--border-color);color:var(--text-main);font-weight:500;">🌐 Official Website</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

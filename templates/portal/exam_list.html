@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}Exams - GovConnect{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <div class="row g-4">
+    <!-- Filters Sidebar -->
+    <div class="col-lg-3">
+      <div class="premium-card" style="position:sticky;top:100px;">
+        <p style="font-size:.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem;">Filters</p>
+        <form method="GET" action="{% url 'portal:exam_list' %}">
+          <div class="mb-3">
+            <label for="q" class="form-label" style="font-weight:500;font-size:.82rem;">Search</label>
+            <input type="text" class="form-control form-control-sm" id="q" name="q" value="{{ q|default:'' }}" placeholder="UPSC, SSC, Banking...">
+          </div>
+          <div class="mb-3">
+            <label for="category" class="form-label" style="font-weight:500;font-size:.82rem;">Category</label>
+            <select class="form-select form-select-sm" id="category" name="category">
+              <option value="">All</option>
+              {% for cat in categories %}
+                <option value="{{ cat.id }}" {% if category_id == cat.id|stringformat:"i" %}selected{% endif %}>{{ cat.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="qualification" class="form-label" style="font-weight:500;font-size:.82rem;">Qualification</label>
+            <select class="form-select form-select-sm" id="qualification" name="qualification">
+              <option value="">All</option>
+              <option value="10th" {% if qualification == '10th' %}selected{% endif %}>10th Pass</option>
+              <option value="12th" {% if qualification == '12th' %}selected{% endif %}>12th Pass</option>
+              <option value="Graduate" {% if qualification == 'Graduate' %}selected{% endif %}>Graduate</option>
+              <option value="PostGraduate" {% if qualification == 'PostGraduate' %}selected{% endif %}>Post-Graduate</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="sort_by" class="form-label" style="font-weight:500;font-size:.82rem;">Sort</label>
+            <select class="form-select form-select-sm" id="sort_by" name="sort_by">
+              <option value="name" {% if sort_by == 'name' %}selected{% endif %}>Name (A-Z)</option>
+              <option value="vacancy" {% if sort_by == 'vacancy' %}selected{% endif %}>Vacancies</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-gov-primary btn-sm w-100 mb-2">Apply</button>
+          <a href="{% url 'portal:exam_list' %}" class="btn btn-sm w-100" style="color:var(--text-muted);font-size:.82rem;">Reset filters</a>
+        </form>
+      </div>
+    </div>
+
+    <!-- Results Grid -->
+    <div class="col-lg-9">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 style="font-size:1.6rem;font-weight:800;letter-spacing:-0.03em;margin:0;">Exams</h2>
+        <span style="color:var(--text-muted);font-size:.85rem;">{{ exams|length }} results</span>
+      </div>
+      
+      <div class="row g-3">
+        {% for exam in exams %}
+          <div class="col-md-6">
+            <div class="premium-card h-100" style="padding:1.5rem;cursor:pointer;" onclick="location.href='{% url 'portal:exam_detail' exam.id %}'">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <span class="badge-category">{{ exam.category.name }}</span>
+                <span style="font-size:.78rem;color:var(--text-muted);">{{ exam.vacancy_count }} vacancies</span>
+              </div>
+              <h4 style="font-size:1.05rem;font-weight:700;margin-bottom:.3rem;">{{ exam.name }}</h4>
+              <p style="color:var(--text-muted);font-size:.82rem;margin-bottom:0;">{{ exam.conducting_authority }}</p>
+            </div>
+          </div>
+        {% empty %}
+          <div class="col-12 text-center py-5">
+            <div style="font-size:3rem;margin-bottom:1rem;">📂</div>
+            <p style="color:var(--text-muted);">No exams match your filters.</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

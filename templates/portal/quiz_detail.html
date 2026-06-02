@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}{{ quiz.title }} - Interactive Quiz - GovConnect{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      
+      <!-- Intro Card -->
+      <div class="premium-card mb-4 text-center" style="padding:2.5rem;">
+        <h2 style="font-size:1.6rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:0.4rem;">{{ quiz.title }}</h2>
+        <p style="color:var(--text-muted);font-size:.92rem;margin-bottom:1rem;">{{ quiz.description }}</p>
+        <span class="badge-category">Total Questions: {{ quiz.questions.count }}</span>
+      </div>
+
+      <!-- Quiz Interactive Card container -->
+      {% csrf_token %}
+      <div id="interactiveQuizCard" data-quiz-id="{{ quiz.id }}">
+        {% for q in quiz.questions.all %}
+          <div class="quiz-question-card" id="q-card-{{ q.id }}">
+            <h5 class="mb-4 text-main" style="font-size:1.05rem;font-weight:700;">Q{{ forloop.counter }}. {{ q.question_text }}</h5>
+            
+            <div class="quiz-option" data-question-id="{{ q.id }}" data-value="A" style="font-size:.9rem;padding:.9rem 1.2rem;">
+              <span class="me-2 fw-bold" style="color:var(--text-muted);">A.</span> {{ q.option_a }}
+            </div>
+            
+            <div class="quiz-option" data-question-id="{{ q.id }}" data-value="B" style="font-size:.9rem;padding:.9rem 1.2rem;">
+              <span class="me-2 fw-bold" style="color:var(--text-muted);">B.</span> {{ q.option_b }}
+            </div>
+            
+            <div class="quiz-option" data-question-id="{{ q.id }}" data-value="C" style="font-size:.9rem;padding:.9rem 1.2rem;">
+              <span class="me-2 fw-bold" style="color:var(--text-muted);">C.</span> {{ q.option_c }}
+            </div>
+            
+            <div class="quiz-option" data-question-id="{{ q.id }}" data-value="D" style="font-size:.9rem;padding:.9rem 1.2rem;">
+              <span class="me-2 fw-bold" style="color:var(--text-muted);">D.</span> {{ q.option_d }}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <!-- Submit button -->
+      <div class="text-center my-4">
+        <button id="submitQuizBtn" class="btn btn-lg btn-gov-primary px-5 py-3 shadow" style="font-size:1rem;border-radius:var(--radius-lg);">Submit Quiz &amp; Grade</button>
+      </div>
+
+      <!-- Results Ajax box -->
+      <div id="quizResultsBox" style="display: none; transition: var(--transition-smooth); margin-bottom:2rem;"></div>
+
+      <div class="text-start mt-4 pt-3" style="border-top:1px solid var(--border-color);">
+        <a href="{% url 'portal:current_affairs_list' %}" class="btn btn-sm px-3.5 py-2" style="border:1px solid var(--border-color);color:var(--text-main);font-weight:500;">🔙 Back to Current Affairs</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

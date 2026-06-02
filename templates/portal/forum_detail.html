@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% block title %}{{ post.title }} - Discussion Forum - GovConnect{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-9">
+      
+      <!-- Post Detail Card -->
+      <div class="premium-card mb-4" style="padding:2.5rem;">
+        <div class="d-flex align-items-start gap-3">
+          
+          <!-- Upvote actions -->
+          <div class="forum-upvote-panel d-flex flex-column align-items-center justify-content-center" style="background:var(--bg-tertiary);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:0.5rem;min-width:48px;height:70px;">
+            {% if user.is_authenticated %}
+              <button class="forum-upvote-btn border-0 bg-none" id="postUpvoteBtn" data-id="{{ post.id }}" style="font-size:1.1rem;color:var(--text-muted);cursor:pointer;background:none;line-height:1;">▲</button>
+            {% else %}
+              <span style="font-size:1.1rem;color:var(--text-muted);opacity:0.5;line-height:1;">▲</span>
+            {% endif %}
+            <small id="postUpvoteCount" style="font-size:.85rem;font-weight:700;color:var(--text-main);margin-top:2px;">{{ post.upvotes.count }}</small>
+          </div>
+
+          <div class="flex-grow-1">
+            {% if post.is_verified %}
+              <span class="badge-category mb-2 d-inline-block" style="background:hsla(var(--a-h),var(--a-s),var(--a-l),0.1);color:var(--accent);border-color:hsla(var(--a-h),var(--a-s),var(--a-l),0.2);">⭐ Verified Thread</span>
+            {% endif %}
+            <h1 style="font-size:1.6rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:0.6rem;line-height:1.3;">{{ post.title }}</h1>
+            <p style="color:var(--text-muted);font-size:.82rem;border-bottom:1px solid var(--border-color);padding-bottom:0.8rem;margin-bottom:1.5rem;">
+              By: <strong style="color:var(--text-main);">{{ post.author.email }}</strong> &nbsp;&bull;&nbsp; 
+              Published: {{ post.created_at|date:"M d, Y H:i" }}
+            </p>
+            <div style="color:var(--text-main);font-size:1.02rem;line-height:1.7;">
+              {{ post.content|linebreaks }}
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Comments Section -->
+      <div class="premium-card mb-4" style="padding:2.5rem;">
+        <h4 style="font-size:1.2rem;font-weight:700;margin-bottom:1.5rem;">💬 Comments &amp; Answers ({{ comments|length }})</h4>
+        
+        <div class="d-flex flex-column gap-3 mb-4">
+          {% for comment in comments %}
+            <div class="p-3 rounded" style="background:var(--bg-tertiary);border:1px solid var(--border-color);">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <strong style="font-size:.85rem;color:var(--text-main);">{{ comment.author.email }}</strong>
+                <small style="color:var(--text-muted);font-size:.78rem;">{{ comment.created_at|date:"M d, Y H:i" }}</small>
+              </div>
+              <p style="color:var(--text-muted);font-size:.9rem;line-height:1.6;margin-bottom:0;">{{ comment.content|linebreaksbr }}</p>
+            </div>
+          {% empty %}
+            <p style="color:var(--text-muted);font-size:.88rem;padding:1rem 0;">No answers posted yet. Add your thoughts below!</p>
+          {% endfor %}
+        </div>
+
+        <div style="height:1px;background:var(--border-color);margin:2rem 0;"></div>
+        
+        <!-- Post a comment -->
+        <h5 style="font-size:1rem;font-weight:700;margin-bottom:1rem;">Add your Response:</h5>
+        {% if user.is_authenticated %}
+          <form method="POST" action="{% url 'portal:create_forum_comment' post.id %}">
+            {% csrf_token %}
+            <div class="mb-3">
+              <textarea class="form-control" name="content" rows="4" required placeholder="Write a supportive answer or verify information..." style="font-size:.9rem;"></textarea>
+            </div>
+            <button type="submit" class="btn btn-gov-primary btn-sm px-4 py-2">Submit Response</button>
+          </form>
+        {% else %}
+          <div class="p-3 rounded text-center" style="background:var(--bg-tertiary);border:1px dashed var(--border-color);">
+            <p style="color:var(--text-muted);font-size:.85rem;margin-bottom:0;">Please <a href="{% url 'users:login' %}" style="color:var(--primary);font-weight:600;text-decoration:none;">Sign In</a> to post comments.</p>
+          </div>
+        {% endif %}
+
+      </div>
+
+      <div class="text-start">
+        <a href="{% url 'portal:forum_list' %}" class="btn btn-sm px-3.5 py-2" style="border:1px solid var(--border-color);color:var(--text-main);font-weight:500;">🔙 Back to Board</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const upvoteBtn = document.getElementById('postUpvoteBtn');
+  const upvoteCount = document.getElementById('postUpvoteCount');
+  
+  if (upvoteBtn && upvoteCount) {
+    // Check local initial status if marked in HTML
+    upvoteBtn.addEventListener('click', () => {
+      const postId = upvoteBtn.getAttribute('data-id');
+      
+      fetch(`/forum/post/upvote/${postId}/`)
+        .then(res => res.json())
+        .then(data => {
+          upvoteCount.innerText = data.count;
+          if (data.upvoted) {
+            upvoteBtn.style.color = 'var(--primary)';
+          } else {
+            upvoteBtn.style.color = 'var(--text-muted)';
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert('Auth required to upvote forum posts.');
+        });
+    });
+  }
+});
+</script>
+{% endblock %}

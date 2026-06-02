@@ -1,0 +1,235 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+/* Reset and Core Layout */
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  transition: var(--transition-smooth);
+  margin: 0;
+  padding-top: 120px; /* Spaced for modern navbar + accessibility bar */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.03em;
+}
+
+/* Premium Radial Background Mesh for SaaS look */
+.mesh-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 550px;
+  background-image: radial-gradient(ellipse at top, rgba(79, 70, 229, 0.07), transparent 60%);
+  z-index: -1;
+  pointer-events: none;
+}
+[data-theme="dark"] .mesh-bg {
+  background-image: radial-gradient(ellipse at top, rgba(124, 58, 237, 0.12), transparent 55%);
+}
+
+/* Ultra-Premium Glass Floating Navbar */
+.gov-navbar {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  top: 48px !important; /* Positioned below accessibility top bar */
+  border-radius: 50px;
+  width: calc(100% - 40px);
+  max-width: 1300px;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  box-shadow: var(--shadow-sm);
+  padding: 0.6rem 1.5rem;
+  z-index: 1050;
+  transition: var(--transition-smooth);
+}
+.gov-navbar .navbar-collapse {
+  align-items: center;
+}
+.gov-navbar .navbar-nav {
+  align-items: center;
+}
+[data-theme="dark"] .gov-navbar {
+  background: rgba(18, 18, 20, 0.7);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-brand {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1.4rem;
+  letter-spacing: -0.5px;
+  color: var(--text-main) !important;
+}
+
+.nav-link {
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: var(--transition-smooth);
+  color: var(--text-muted) !important;
+  padding: 0.5rem 1rem !important;
+}
+.nav-link:hover, .nav-link.active {
+  color: var(--primary) !important;
+}
+
+/* Figma/Stripe Glassmorphism Cards */
+.premium-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 2rem;
+  transition: var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+.premium-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
+  border-color: rgba(79, 70, 229, 0.2);
+}
+[data-theme="dark"] .premium-card:hover {
+  border-color: rgba(124, 58, 237, 0.25);
+}
+
+/* Glass Dashboard Widgets */
+.glass-widget {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  transition: var(--transition-smooth);
+  box-shadow: var(--shadow-sm);
+}
+[data-theme="dark"] .glass-widget {
+  background: rgba(20, 20, 22, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+/* Premium Custom Buttons */
+.btn-gov-primary {
+  background: linear-gradient(135deg, var(--primary), hsl(var(--p-h), var(--p-s), 50%));
+  color: var(--text-white) !important;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 1.6rem;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-smooth);
+  letter-spacing: -0.01em;
+}
+.btn-gov-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.35);
+  filter: brightness(1.1);
+}
+.btn-gov-primary:active {
+  transform: translateY(0);
+}
+
+.btn-gov-secondary {
+  background: linear-gradient(135deg, var(--secondary), hsl(var(--s-h), var(--s-s), 48%));
+  color: var(--text-white) !important;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 1.6rem;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-smooth);
+  letter-spacing: -0.01em;
+}
+.btn-gov-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(124, 58, 237, 0.35);
+  filter: brightness(1.1);
+}
+
+/* Clean Form Elements */
+.form-control, .form-select {
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-secondary);
+  color: var(--text-main);
+  padding: 0.65rem 1rem;
+  transition: var(--transition-smooth);
+}
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary);
+  background-color: var(--bg-secondary);
+  color: var(--text-main);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+}
+[data-theme="dark"] .form-control:focus, [data-theme="dark"] .form-select:focus {
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+}
+
+/* Badge styles */
+.badge-category {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background-color: var(--bg-tertiary);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  padding: 0.4em 0.8em;
+  border-radius: 50px;
+}
+
+/* Footer Section */
+.gov-footer {
+  background-color: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  color: var(--text-muted);
+  padding: 4rem 0 2rem;
+  font-size: 0.9rem;
+}
+.gov-footer h5 {
+  color: var(--text-main);
+  font-weight: 700;
+  margin-bottom: 1.2rem;
+}
+.gov-footer a {
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: var(--transition-smooth);
+}
+.gov-footer a:hover {
+  color: var(--primary);
+  padding-left: 2px;
+}
+
+/* Mobile responsive navbar adjustments */
+@media (max-width: 991.98px) {
+  .gov-navbar {
+    border-radius: 20px;
+    padding: 0.6rem 1.2rem;
+  }
+  .gov-navbar .navbar-collapse {
+    padding-top: 0.75rem;
+    align-items: stretch;
+  }
+  .gov-navbar .navbar-nav {
+    align-items: stretch;
+  }
+  .gov-navbar .nav-link {
+    padding: 0.5rem 0.5rem !important;
+  }
+}

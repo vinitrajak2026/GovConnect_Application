@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard - GovConnect{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  
+  <!-- Welcome header -->
+  <div class="premium-card mb-4" style="background:linear-gradient(135deg,hsl(var(--p-h),var(--p-s),var(--p-l)),hsl(var(--s-h),var(--s-s),var(--s-l)));border:none;color:#fff;padding:2.5rem;">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div>
+        <h2 style="font-size:1.6rem;font-weight:800;letter-spacing:-0.03em;color:#fff;margin-bottom:0.3rem;">Welcome back 👋</h2>
+        <p style="opacity:.8;margin-bottom:0;font-size:.9rem;">{{ profile.user.email }} · {{ profile.state.name|default:"No state set" }}</p>
+      </div>
+      <a href="{% url 'users:update_profile' %}" class="btn btn-sm px-4 py-2" style="background:rgba(255,255,255,.15);backdrop-filter:blur(8px);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:var(--radius-sm);font-weight:600;font-size:.85rem;">⚙️ Edit Profile</a>
+    </div>
+  </div>
+
+  <!-- Profile + AI recommendations row -->
+  <div class="row g-4 mb-4">
+    
+    <!-- Profile snapshot -->
+    <div class="col-lg-4">
+      <div class="premium-card h-100">
+        <p style="font-size:.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem;">Profile</p>
+        <div class="d-flex flex-column gap-3">
+          <div class="d-flex justify-content-between"><span style="color:var(--text-muted);font-size:.88rem;">Occupation</span><span style="font-weight:600;font-size:.88rem;">{{ profile.get_occupation_display }}</span></div>
+          <div class="d-flex justify-content-between"><span style="color:var(--text-muted);font-size:.88rem;">Qualification</span><span style="font-weight:600;font-size:.88rem;">{{ profile.get_qualification_display }}</span></div>
+          <div class="d-flex justify-content-between"><span style="color:var(--text-muted);font-size:.88rem;">Age</span><span style="font-weight:600;font-size:.88rem;">{{ profile.age }} yrs</span></div>
+          <div class="d-flex justify-content-between"><span style="color:var(--text-muted);font-size:.88rem;">Income</span><span style="font-weight:600;font-size:.88rem;">₹{{ profile.annual_income|floatformat:0 }}</span></div>
+          <div class="d-flex justify-content-between"><span style="color:var(--text-muted);font-size:.88rem;">Gender</span><span style="font-weight:600;font-size:.88rem;">{{ profile.gender }}</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Scheme Matches -->
+    <div class="col-lg-4">
+      <div class="premium-card h-100">
+        <p style="font-size:.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem;">🎯 AI Scheme Matches</p>
+        {% if recommended_schemes %}
+          <div class="d-flex flex-column gap-3">
+            {% for item in recommended_schemes %}
+              <div>
+                <a href="{% url 'portal:scheme_detail' item.scheme.id %}" style="text-decoration:none;font-weight:600;font-size:.9rem;color:var(--text-main);display:block;margin-bottom:4px;">{{ item.scheme.name }}</a>
+                <div class="d-flex align-items-center gap-2">
+                  <div class="flex-grow-1" style="height:4px;background:var(--bg-tertiary);border-radius:99px;overflow:hidden;">
+                    <div style="height:100%;width:{{ item.score }}%;background:var(--accent);border-radius:99px;"></div>
+                  </div>
+                  <span style="font-size:.75rem;font-weight:600;color:var(--accent);white-space:nowrap;">{{ item.score }}%</span>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p style="color:var(--text-muted);font-size:.88rem;">No matches found. Update your profile for better results.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- AI Exam Suggestions -->
+    <div class="col-lg-4">
+      <div class="premium-card h-100">
+        <p style="font-size:.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem;">🎓 AI Exam Suggestions</p>
+        {% if recommended_exams %}
+          <div class="d-flex flex-column gap-3">
+            {% for item in recommended_exams %}
+              <div>
+                <a href="{% url 'portal:exam_detail' item.exam.id %}" style="text-decoration:none;font-weight:600;font-size:.9rem;color:var(--text-main);display:block;">{{ item.exam.name }}</a>
+                <div class="d-flex justify-content-between align-items-center mt-1">
+                  <span style="font-size:.78rem;color:var(--text-muted);">{{ item.exam.conducting_authority }}</span>
+                  <span class="badge-category" style="font-size:.68rem;">Score: {{ item.score }}</span>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p style="color:var(--text-muted);font-size:.88rem;">No eligible exams found for your credentials.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Bookmarks tabs -->
+  <div class="premium-card mb-4">
+    <p style="font-size:.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem;">Saved Items</p>
+    
+    <nav>
+      <div class="nav nav-tabs border-0 gap-1" id="nav-tab" role="tablist">
+        <button class="nav-link active px-3 py-2 border-0" id="nav-schemes-tab" data-bs-toggle="tab" data-bs-target="#nav-schemes" type="button" role="tab" style="border-radius:var(--radius-sm);font-size:.85rem;font-weight:500;color:var(--text-main);background:var(--bg-tertiary);">Schemes ({{ saved_schemes|length }})</button>
+        <button class="nav-link px-3 py-2 border-0" id="nav-exams-tab" data-bs-toggle="tab" data-bs-target="#nav-exams" type="button" role="tab" style="border-radius:var(--radius-sm);font-size:.85rem;font-weight:500;color:var(--text-main);">Exams ({{ saved_exams|length }})</button>
+        <button class="nav-link px-3 py-2 border-0" id="nav-jobs-tab" data-bs-toggle="tab" data-bs-target="#nav-jobs" type="button" role="tab" style="border-radius:var(--radius-sm);font-size:.85rem;font-weight:500;color:var(--text-main);">Jobs ({{ saved_jobs|length }})</button>
+      </div>
+    </nav>
+    
+    <div class="tab-content pt-3" id="nav-tabContent">
+      <div class="tab-pane fade show active" id="nav-schemes" role="tabpanel">
+        {% if saved_schemes %}
+          <div class="row g-3">
+            {% for scheme in saved_schemes %}
+              <div class="col-md-6 col-lg-4">
+                <div style="border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:1.25rem;">
+                  <h6 style="margin-bottom:.3rem;"><a href="{% url 'portal:scheme_detail' scheme.id %}" style="text-decoration:none;color:var(--text-main);font-weight:600;">{{ scheme.name }}</a></h6>
+                  <span style="font-size:.78rem;color:var(--text-muted);">{{ scheme.category }}</span>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p style="color:var(--text-muted);font-size:.88rem;padding:1rem 0;">No saved schemes yet.</p>
+        {% endif %}
+      </div>
+      <div class="tab-pane fade" id="nav-exams" role="tabpanel">
+        {% if saved_exams %}
+          <div class="row g-3">
+            {% for exam in saved_exams %}
+              <div class="col-md-6 col-lg-4">
+                <div style="border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:1.25rem;">
+                  <h6 style="margin-bottom:.3rem;"><a href="{% url 'portal:exam_detail' exam.id %}" style="text-decoration:none;color:var(--text-main);font-weight:600;">{{ exam.name }}</a></h6>
+                  <span style="font-size:.78rem;color:var(--text-muted);">{{ exam.conducting_authority }}</span>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p style="color:var(--text-muted);font-size:.88rem;padding:1rem 0;">No saved exams yet.</p>
+        {% endif %}
+      </div>
+      <div class="tab-pane fade" id="nav-jobs" role="tabpanel">
+        {% if saved_jobs %}
+          <div class="row g-3">
+            {% for job in saved_jobs %}
+              <div class="col-md-6 col-lg-4">
+                <div style="border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:1.25rem;">
+                  <h6 style="margin-bottom:.3rem;"><a href="{% url 'portal:job_detail' job.id %}" style="text-decoration:none;color:var(--text-main);font-weight:600;">{{ job.post_name }}</a></h6>
+                  <span style="font-size:.78rem;color:var(--text-muted);">{{ job.department }}</span>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p style="color:var(--text-muted);font-size:.88rem;padding:1rem 0;">No saved jobs yet.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Activity log -->
+  <div class="premium-card">
+    <p style="font-size:.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem;">🔒 Activity Log</p>
+    <div class="d-flex flex-column gap-0">
+      {% for log in activities %}
+        <div class="d-flex justify-content-between align-items-center py-3" style="border-bottom:1px solid var(--border-color);">
+          <div>
+            <span style="font-weight:600;font-size:.88rem;">{{ log.action }}</span>
+            <span style="color:var(--text-muted);font-size:.82rem;display:block;">{{ log.details }}</span>
+          </div>
+          <span style="color:var(--text-muted);font-size:.78rem;white-space:nowrap;">{{ log.timestamp|date:"M d, H:i" }}</span>
+        </div>
+      {% empty %}
+        <p style="color:var(--text-muted);font-size:.88rem;padding:1rem 0;">No activity recorded yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+{% endblock %}

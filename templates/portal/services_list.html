@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}Government Services Directory - GovConnect{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div class="premium-card" style="padding:2.5rem;">
+        <h2 style="font-size:1.6rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:0.4rem;">National Citizen Services Directory</h2>
+        <p style="color:var(--text-muted);font-size:.9rem;margin-bottom:2.5rem;">Quick reference information catalogue regarding application procedures, fee schedules, and required supporting documents for major national identity credentials.</p>
+        
+        <div class="accordion" id="servicesAccordion">
+          {% for sv in services %}
+            <div class="accordion-item bg-transparent mb-3" style="border:1px solid var(--border-color);border-radius:var(--radius-sm);overflow:hidden;">
+              <h2 class="accordion-header" id="heading{{ sv.id }}">
+                <button class="accordion-button collapsed py-3 px-4 border-0" 
+                        type="button" 
+                        data-bs-toggle="collapse" 
+                        data-bs-target="#collapse{{ sv.id }}" 
+                        aria-expanded="false" 
+                        aria-controls="collapse{{ sv.id }}"
+                        style="background:var(--bg-secondary);color:var(--text-main);font-weight:600;font-size:.95rem;box-shadow:none;">
+                  🌐 &nbsp;{{ sv.name }}
+                </button>
+              </h2>
+              <div id="collapse{{ sv.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ sv.id }}" data-bs-parent="#servicesAccordion">
+                <div class="accordion-body px-4 py-4" style="background:var(--bg-secondary);border-top:1px solid var(--border-color);">
+                  <h5 style="font-size:.9rem;font-weight:700;color:var(--text-main);margin-bottom:.5rem;">Description:</h5>
+                  <p style="color:var(--text-muted);font-size:.9rem;line-height:1.6;margin-bottom:1.5rem;">{{ sv.description }}</p>
+                  
+                  <div class="row g-3 my-2">
+                    <div class="col-md-6">
+                      <div class="p-3 h-100 rounded" style="background:var(--bg-tertiary);border:1px solid var(--border-color);">
+                        <strong style="font-size:.85rem;color:var(--text-main);">🗂️ Required Documents:</strong>
+                        <p style="color:var(--text-muted);font-size:.82rem;line-height:1.6;margin-top:.4rem;margin-bottom:0;">{{ sv.documents_required|linebreaksbr }}</p>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="p-3 h-100 rounded" style="background:var(--bg-tertiary);border:1px solid var(--border-color);">
+                        <strong style="font-size:.85rem;color:var(--text-main);">💰 Fee Structure:</strong>
+                        <p style="color:var(--text-muted);font-size:.82rem;line-height:1.6;margin-top:.4rem;margin-bottom:0;">Standard Fee: <strong style="color:var(--accent);">Rs. {{ sv.fees|floatformat:2 }}</strong></p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <h5 class="mt-4" style="font-size:.9rem;font-weight:700;color:var(--text-main);margin-bottom:.5rem;">Application Process Steps:</h5>
+                  <p style="color:var(--text-muted);font-size:.9rem;line-height:1.6;">{{ sv.process|linebreaks }}</p>
+                  
+                  <div class="text-end mt-3">
+                    <a href="{{ sv.official_link }}" class="btn btn-gov-primary btn-sm px-4 py-2" target="_blank">🌐 Go to Application portal</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% empty %}
+            <p class="text-muted text-center py-5">No service instructions loaded in current directory.</p>
+          {% endfor %}
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

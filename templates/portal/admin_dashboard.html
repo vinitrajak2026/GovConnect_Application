@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+{% block title %}System Control &amp; Analytics Dashboard - GovConnect{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="premium-card" style="background:linear-gradient(135deg,hsl(var(--p-h),var(--p-s),var(--p-l)),hsl(var(--s-h),var(--s-s),var(--s-l)));border:none;color:#fff;padding:2.5rem;">
+        <h2 style="font-size:1.6rem;font-weight:800;letter-spacing:-0.03em;color:#fff;margin-bottom:0.3rem;">System Analytics Control Panel</h2>
+        <p style="opacity:.8;margin-bottom:0;font-size:.9rem;">Real-time demographic matches, citizen distributions, popular exams bookmarks, and portal traffic trends.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div id="analyticsLoading" class="text-center py-5">
+    <div class="spinner-border" role="status" style="width: 3rem; height: 3rem; color:var(--primary);">
+      <span class="visually-hidden">Syncing dashboard...</span>
+    </div>
+    <p class="mt-3" style="color:var(--text-muted);font-size:.9rem;">Analyzing bookmarks databases &amp; demographic metrics...</p>
+  </div>
+
+  <!-- Dashboard Content (Hidden until loaded) -->
+  <div id="analyticsDashboardContent" style="display: none;">
+    
+    <!-- 1. Stats Counter widgets -->
+    <div class="row g-4 mb-4" style="--bs-gutter-x: 1.5rem;">
+      <div class="col-6 col-lg-2.4" style="flex: 0 0 auto; width: 20%;" class="d-none d-lg-block">
+        <!-- Flex adjustment for 5 cards across wide screens -->
+      </div>
+    </div>
+    
+    <div class="row g-4 mb-4">
+      <div class="col-md-6 col-lg-4">
+        <div class="premium-card text-center" style="padding:1.5rem;">
+          <h5 style="color:var(--text-muted);font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:0.5rem;">Registered Citizens</h5>
+          <h2 id="cntCitizens" style="font-size:2rem;font-weight:800;color:var(--primary);margin:0;">-</h2>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="premium-card text-center" style="padding:1.5rem;">
+          <h5 style="color:var(--text-muted);font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:0.5rem;">Moderators Active</h5>
+          <h2 id="cntModerators" style="font-size:2rem;font-weight:800;color:var(--primary);margin:0;">-</h2>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="premium-card text-center" style="padding:1.5rem;">
+          <h5 style="color:var(--text-muted);font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:0.5rem;">Exams Listed</h5>
+          <h2 id="cntExams" style="font-size:2rem;font-weight:800;color:var(--primary);margin:0;">-</h2>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-6">
+        <div class="premium-card text-center" style="padding:1.5rem;">
+          <h5 style="color:var(--text-muted);font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:0.5rem;">Active Vacancies</h5>
+          <h2 id="cntJobs" style="font-size:2rem;font-weight:800;color:var(--accent);margin:0;">-</h2>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-6">
+        <div class="premium-card text-center" style="padding:1.5rem;">
+          <h5 style="color:var(--text-muted);font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:0.5rem;">Welfare Schemes</h5>
+          <h2 id="cntSchemes" style="font-size:2rem;font-weight:800;color:var(--accent);margin:0;">-</h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Charts Row 1 (Exams & Schemes bookmarks) -->
+    <div class="row g-4 mb-4">
+      <div class="col-lg-6">
+        <div class="premium-card" style="padding:2rem;">
+          <h4 style="font-size:1.1rem;font-weight:700;margin-bottom:1.5rem;color:var(--text-main);border-bottom:1px solid var(--border-color);padding-bottom:.5rem;">📊 Popular Exams (Bookmarks count)</h4>
+          <div style="height: 300px; position: relative;">
+            <canvas id="examsChart"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="premium-card" style="padding:2rem;">
+          <h4 style="font-size:1.1rem;font-weight:700;margin-bottom:1.5rem;color:var(--text-main);border-bottom:1px solid var(--border-color);padding-bottom:.5rem;">🎯 Popular Schemes (Bookmarks count)</h4>
+          <div style="height: 300px; position: relative;">
+            <canvas id="schemesChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Charts Row 2 (Citizen growth trends) -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="premium-card" style="padding:2rem;">
+          <h4 style="font-size:1.1rem;font-weight:700;margin-bottom:1.5rem;color:var(--text-main);border-bottom:1px solid var(--border-color);padding-bottom:.5rem;">📈 Citizen registrations trend</h4>
+          <div style="height: 320px; position: relative;">
+            <canvas id="registrationsChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<!-- Chart.js CDN for visual reports painting -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const loading = document.getElementById('analyticsLoading');
+  const dashboard = document.getElementById('analyticsDashboardContent');
+
+  if (loading && dashboard) {
+    fetch('/admin-dashboard/data/')
+      .then(res => res.json())
+      .then(data => {
+        // Hide loader & show dashboard
+        loading.style.display = 'none';
+        dashboard.style.display = 'block';
+
+        // Set counts
+        document.getElementById('cntCitizens').innerText = data.counts.citizens;
+        document.getElementById('cntModerators').innerText = data.counts.moderators;
+        document.getElementById('cntExams').innerText = data.counts.exams;
+        document.getElementById('cntJobs').innerText = data.counts.jobs;
+        document.getElementById('cntSchemes').innerText = data.counts.schemes;
+
+        // Extract style variables dynamically
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const primaryColor = 'rgba(99, 102, 241, 0.85)';
+        const accentColor = 'rgba(236, 72, 153, 0.85)';
+        const textColor = isDark ? '#f8fafc' : '#0f172a';
+        const borderColor = 'rgba(226, 232, 240, 0.1)';
+
+        // Render Popular Exams Bar Chart
+        const examsLabels = data.popular_exams.map(x => x.name);
+        const examsValues = data.popular_exams.map(x => x.bookmarks);
+        new Chart(document.getElementById('examsChart').getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: examsLabels,
+            datasets: [{
+              label: 'Saved bookmarks',
+              data: examsValues,
+              backgroundColor: primaryColor,
+              borderColor: primaryColor,
+              borderWidth: 1,
+              borderRadius: 4
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { labels: { color: textColor } }
+            },
+            scales: {
+              x: { grid: { color: borderColor }, ticks: { color: textColor } },
+              y: { beginAtZero: true, grid: { color: borderColor }, ticks: { color: textColor, precision: 0 } }
+            }
+          }
+        });
+
+        // Render Popular Schemes Doughnut Chart
+        const schemesLabels = data.popular_schemes.map(x => x.name);
+        const schemesValues = data.popular_schemes.map(x => x.bookmarks);
+        new Chart(document.getElementById('schemesChart').getContext('2d'), {
+          type: 'doughnut',
+          data: {
+            labels: schemesLabels,
+            datasets: [{
+              data: schemesValues,
+              backgroundColor: [
+                'rgba(99, 102, 241, 0.75)',
+                'rgba(236, 72, 153, 0.75)',
+                'rgba(34, 197, 94, 0.75)',
+                'rgba(234, 179, 8, 0.75)',
+                'rgba(249, 115, 22, 0.75)'
+              ],
+              borderColor: isDark ? '#1e293b' : '#ffffff',
+              borderWidth: 2
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { labels: { color: textColor } }
+            }
+          }
+        });
+
+        // Render Registrations Trend Line Chart
+        const regLabels = data.registrations_trend.map(x => x.date);
+        const regValues = data.registrations_trend.map(x => x.count);
+        new Chart(document.getElementById('registrationsChart').getContext('2d'), {
+          type: 'line',
+          data: {
+            labels: regLabels,
+            datasets: [{
+              label: 'Daily Signups',
+              data: regValues,
+              fill: true,
+              backgroundColor: 'rgba(99, 102, 241, 0.1)',
+              borderColor: 'rgba(99, 102, 241, 1)',
+              tension: 0.3,
+              borderWidth: 2
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { labels: { color: textColor } }
+            },
+            scales: {
+              x: { grid: { color: borderColor }, ticks: { color: textColor } },
+              y: { beginAtZero: true, grid: { color: borderColor }, ticks: { color: textColor, precision: 0 } }
+            }
+          }
+        });
+
+      })
+      .catch(err => {
+        console.error(err);
+        loading.innerHTML = `<div class="alert alert-danger" style="border-radius:var(--radius-sm);">Failed to sync database reports. Please reload page.</div>`;
+      });
+  }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}Sign In - GovConnect{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-10 col-xl-9">
+      <div class="split-auth-container">
+        
+        <!-- Left: Login Form -->
+        <div class="split-auth-form-side">
+          <div style="max-width:380px;margin:0 auto;width:100%;">
+            <div class="mb-4">
+              <h2 style="font-size:1.8rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:0.5rem;">Welcome back</h2>
+              <p style="color:var(--text-muted);font-size:.95rem;">Sign in to your citizen account to continue.</p>
+            </div>
+            
+            <form method="POST" action="{% url 'users:login' %}">
+              {% csrf_token %}
+              
+              <div class="mb-3">
+                <label for="email" class="form-label" style="font-weight:500;font-size:.88rem;">Email address</label>
+                <input type="email" class="form-control" id="email" name="email" required placeholder="you@example.com" aria-describedby="emailHelp">
+              </div>
+              
+              <div class="mb-4">
+                <label for="password" class="form-label" style="font-weight:500;font-size:.88rem;">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required placeholder="••••••••">
+              </div>
+              
+              <button type="submit" class="btn btn-gov-primary w-100 mb-3" style="padding:.75rem;">Sign In</button>
+              
+              <p class="text-center mb-0" style="color:var(--text-muted);font-size:.88rem;">
+                Don't have an account? <a href="{% url 'users:register' %}" style="color:var(--primary);text-decoration:none;font-weight:600;">Create one</a>
+              </p>
+            </form>
+          </div>
+        </div>
+
+        <!-- Right: Branding Banner -->
+        <div class="split-auth-banner-side d-none d-lg-flex">
+          <div class="gradient-orb" style="top:-80px;right:-80px;opacity:0.3;" aria-hidden="true"></div>
+          <div style="position:relative;z-index:2;">
+            <div style="font-size:3.5rem;margin-bottom:1.5rem;">🏛️</div>
+            <h3 style="font-size:1.8rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:1rem;">Your gateway to government opportunities</h3>
+            <ul class="list-unstyled d-flex flex-column gap-3" style="font-size:.95rem;opacity:.85;">
+              <li class="d-flex align-items-center gap-2">✓ AI-powered scheme & exam recommendations</li>
+              <li class="d-flex align-items-center gap-2">✓ Interactive eligibility calculators</li>
+              <li class="d-flex align-items-center gap-2">✓ Real-time job alerts & notifications</li>
+              <li class="d-flex align-items-center gap-2">✓ Weekly quiz preparation modules</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

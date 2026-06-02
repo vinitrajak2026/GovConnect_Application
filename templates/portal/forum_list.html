@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}Discussion Forum - GovConnect{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <div class="row g-4">
+    
+    <!-- Left forum topics list -->
+    <div class="col-lg-8">
+      <div class="premium-card" style="padding:2.5rem;">
+        <h2 style="font-size:1.6rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:0.4rem;">Citizen Discussion Board</h2>
+        <p style="color:var(--text-muted);font-size:.92rem;margin-bottom:2rem;">A dedicated space for candidates to ask questions, share notes, and consult moderators regarding schedules.</p>
+        
+        <div class="d-flex flex-column gap-4">
+          {% for post in posts %}
+            <div class="d-flex align-items-start gap-3 pb-4" style="border-bottom:1px solid var(--border-color);">
+              
+              <!-- Left upvote panel -->
+              <div class="forum-upvote-panel d-flex flex-column align-items-center justify-content-center" style="background:var(--bg-tertiary);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:0.5rem;min-width:48px;height:54px;">
+                <span style="font-size:.8rem;color:var(--text-muted);margin-bottom:2px;cursor:pointer;">▲</span>
+                <span style="font-size:.85rem;font-weight:700;color:var(--text-main);">{{ post.upvote_count }}</span>
+              </div>
+
+              <!-- Content details -->
+              <div class="flex-grow-1">
+                {% if post.is_verified %}
+                  <span class="badge-category mb-2 d-inline-block" style="background:hsla(var(--a-h),var(--a-s),var(--a-l),0.1);color:var(--accent);border-color:hsla(var(--a-h),var(--a-s),var(--a-l),0.2);">⭐ Verified Thread</span>
+                {% endif %}
+                <h4 style="font-size:1.15rem;font-weight:700;margin-bottom:.4rem;">
+                  <a href="{% url 'portal:forum_detail' post.id %}" style="text-decoration:none;color:var(--text-main);">{{ post.title }}</a>
+                </h4>
+                <p style="color:var(--text-muted);font-size:.78rem;margin-bottom:.8rem;">
+                  Posted by: <strong style="color:var(--text-main);">{{ post.author.email }}</strong> &nbsp;&bull;&nbsp; 
+                  {{ post.created_at|date:"M d, Y H:i" }} &nbsp;&bull;&nbsp; 
+                  💬 {{ post.comment_count }} comments
+                </p>
+                <p style="color:var(--text-muted);font-size:.88rem;line-height:1.6;">{{ post.content|truncatewords:35 }}</p>
+              </div>
+
+            </div>
+          {% empty %}
+            <div class="text-center py-5">
+              <div style="font-size:3rem;margin-bottom:1rem;">💬</div>
+              <p style="color:var(--text-muted);">No discussion topics posted yet. Be the first to start a conversation!</p>
+            </div>
+          {% endfor %}
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Right ask question sidebar -->
+    <div class="col-lg-4">
+      <div class="premium-card" style="padding:1.5rem;position:sticky;top:100px;">
+        <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:0.4rem;">💬 Start a New Thread</h3>
+        <p style="color:var(--text-muted);font-size:.82rem;line-height:1.6;margin-bottom:1.5rem;">Join the conversation, ask questions, or help other aspirants.</p>
+        {% if user.is_authenticated %}
+          <form method="POST" action="{% url 'portal:create_forum_post' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="title" class="form-label" style="font-size:.78rem;font-weight:500;">Thread Topic Title</label>
+              <input type="text" class="form-control form-control-sm" id="title" name="title" required placeholder="Syllabus queries, dates help...">
+            </div>
+            <div class="mb-3">
+              <label for="content" class="form-label" style="font-size:.78rem;font-weight:500;">Context Description</label>
+              <textarea class="form-control form-control-sm" id="content" name="content" rows="4" required placeholder="Elaborate details..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-gov-primary btn-sm w-100">Publish Topic</button>
+          </form>
+        {% else %}
+          <div class="p-3 rounded text-center" style="background:var(--bg-tertiary);border:1px dashed var(--border-color);">
+            <p style="color:var(--text-muted);font-size:.85rem;margin-bottom:0;">Please <a href="{% url 'users:login' %}" style="color:var(--primary);font-weight:600;text-decoration:none;">Sign In</a> to post topics or comment.</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

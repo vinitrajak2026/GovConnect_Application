@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Verify OTP - GovConnect{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-5 col-lg-4">
+      <div class="premium-card text-center" style="padding:3rem;">
+        <div style="width:64px;height:64px;background:linear-gradient(135deg,hsla(var(--p-h),var(--p-s),var(--p-l),0.1),hsla(var(--s-h),var(--s-s),var(--s-l),0.1));border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;font-size:1.8rem;">🔐</div>
+        <h2 style="font-size:1.5rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:0.5rem;">Verify your identity</h2>
+        <p style="color:var(--text-muted);font-size:.9rem;margin-bottom:2rem;">A 6-digit code was sent to <strong style="color:var(--text-main);">{{ email }}</strong></p>
+        
+        <form method="POST" action="{% url 'users:verify_otp' %}">
+          {% csrf_token %}
+          <div class="mb-4">
+            <input type="text" class="form-control text-center" id="otp" name="otp" required maxlength="6" autofocus placeholder="000000" style="font-size:2rem;letter-spacing:0.5em;font-weight:700;padding:1rem;">
+            <div class="form-text mt-2" style="color:var(--text-muted);font-size:.8rem;">Check your email or console log for the code.</div>
+          </div>
+          <button type="submit" class="btn btn-gov-primary w-100" style="padding:.75rem;">Verify & Sign In</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

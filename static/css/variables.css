@@ -1,0 +1,87 @@
+/* GovConnect Redesigned Design System Variables (Stripe / Linear / Vercel Aesthetic) */
+:root {
+  /* Font Families */
+  --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* HSL Color Channels */
+  --p-h: 243; --p-s: 75%; --p-l: 59%; /* Indigo-600 */
+  --s-h: 262; --s-s: 83%; --s-l: 58%; /* Violet-600 */
+  --a-h: 162; --a-s: 84%; --a-l: 40%; /* Mint Emerald Teal */
+  --d-h: 350; --d-s: 89%; --d-l: 48%; /* Crimson Red */
+  --w-h: 38;  --w-s: 92%; --w-l: 50%; /* Warning Amber */
+
+  /* Palette mappings (Light Mode) */
+  --primary: hsl(var(--p-h), var(--p-s), var(--p-l));
+  --primary-hover: hsl(var(--p-h), var(--p-s), calc(var(--p-l) - 8%));
+  --secondary: hsl(var(--s-h), var(--s-s), var(--s-l));
+  --secondary-hover: hsl(var(--s-h), var(--s-s), calc(var(--s-l) - 8%));
+  --accent: hsl(var(--a-h), var(--a-s), var(--a-l));
+  --danger: hsl(var(--d-h), var(--d-s), var(--d-l));
+  --warning: hsl(var(--w-h), var(--w-s), var(--w-l));
+  
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f1f5f9;
+  
+  --border-color: rgba(0, 0, 0, 0.06);
+  --border-focus: var(--primary);
+  
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --text-white: #ffffff;
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+  --shadow-glow: 0 0 20px rgba(79, 70, 229, 0.15);
+  
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 24px;
+  --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Premium Dark Mode Overrides (Vercel Deep Zinc/Black Aesthetic) */
+[data-theme="dark"] {
+  --primary: hsl(var(--p-h), var(--p-s), 65%);
+  --primary-hover: hsl(var(--p-h), var(--p-s), 70%);
+  --secondary: hsl(var(--s-h), var(--s-s), 65%);
+  --secondary-hover: hsl(var(--s-h), var(--s-s), 70%);
+  
+  --bg-primary: #09090b; /* pitch black/zinc-950 */
+  --bg-secondary: #121214; /* deep zinc-900 surface */
+  --bg-tertiary: #1b1b1f; /* zinc-800 surface */
+  
+  --border-color: rgba(255, 255, 255, 0.04);
+  --border-focus: var(--primary);
+  
+  --text-main: #f4f4f5; /* zinc-100 */
+  --text-muted: #a1a1aa; /* zinc-400 */
+  
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 25px rgba(124, 58, 237, 0.25);
+}
+
+/* Accessibility: High Contrast Mode Overrides */
+[data-contrast="high"] {
+  --bg-primary: #000000 !important;
+  --bg-secondary: #000000 !important;
+  --bg-tertiary: #111111 !important;
+  --border-color: #ffffff !important;
+  
+  --text-main: #ffffff !important;
+  --text-muted: #ffff00 !important; /* High contrast yellow */
+  --text-white: #ffffff !important;
+  
+  --primary: #0000ff !important;
+  --secondary: #ff00ff !important;
+  --accent: #00ff00 !important;
+  
+  --shadow-glow: none !important;
+  --radius-sm: 0px !important;
+  --radius-md: 0px !important;
+  --radius-lg: 0px !important;
+}
